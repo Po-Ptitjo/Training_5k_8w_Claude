@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f0f13" />
+  <meta name="description" content="Plan d'entraînement 8 semaines sub-19 sur 5km" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Sub-19 5km" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Sub-19 — Plan 5km 8 semaines</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #0f0f13; color: #e8e8f0; font-family: system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    button { font-family: inherit; cursor: pointer; border: none; }
+
+    #app { max-width: 600px; margin: 0 auto; }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      padding: 28px 20px 20px;
+      border-bottom: 1px solid #ffffff15;
+    }
+    .header-eyebrow { font-size: 11px; letter-spacing: .2em; color: #6c8ebf; text-transform: uppercase; margin-bottom: 6px; }
+    .header h1 { font-size: 26px; font-weight: 700; color: #f0f4ff; margin-bottom: 4px; }
+    .header-sub { font-size: 13px; color: #8899bb; }
+    .paces-toggle { margin-top: 14px; padding: 6px 14px; background: #ffffff12; border: 1px solid #ffffff20; border-radius: 8px; color: #a0b4d0; font-size: 12px; }
+    .paces-grid { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .pace-card { background: #ffffff08; border-radius: 8px; padding: 8px 12px; }
+    .pace-label { font-size: 10px; color: #667799; margin-bottom: 2px; }
+    .pace-value { font-size: 13px; font-weight: 600; }
+
+    /* BODY */
+    .body { padding: 16px 20px 0; }
+    .cycle-label { font-size: 11px; color: #556688; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; }
+    .week-selector { display: flex; gap: 8px; margin-bottom: 16px; }
+    .week-btn { flex: 1; padding: 10px 4px; border-radius: 10px; font-size: 13px; transition: all .15s; background: #ffffff10; color: #8899bb; font-weight: 400; }
+    .week-btn.active { background: #3b82f6; color: #fff; font-weight: 700; }
+    .week-btn.active-red { background: #ef4444; color: #fff; font-weight: 700; }
+
+    /* WEEK HEADER */
+    .week-header { background: #ffffff08; border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .week-title { font-size: 16px; font-weight: 700; color: #f0f4ff; }
+    .week-focus { font-size: 12px; color: #667799; margin-top: 3px; }
+    .week-vol-label { font-size: 11px; color: #556688; text-align: right; }
+    .week-vol { font-size: 18px; font-weight: 700; color: #6c8ebf; text-align: right; }
+
+    /* SESSIONS */
+    .sessions { display: flex; flex-direction: column; gap: 12px; padding-bottom: 32px; }
+    .session-card { background: #ffffff06; border: 1px solid #ffffff12; border-radius: 12px; padding: 14px 16px; }
+    .session-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .session-day { font-size: 11px; color: #667799; text-transform: uppercase; letter-spacing: .1em; }
+    .session-type { font-size: 15px; font-weight: 600; color: #e0e8f8; margin-top: 2px; }
+    .session-meta { text-align: right; }
+    .session-vol { font-size: 12px; color: #667799; }
+    .session-rpe { font-size: 11px; color: #445566; margin-top: 2px; }
+    .session-desc { font-size: 13px; color: #99aabb; line-height: 1.5; }
+
+    /* LEGEND */
+    .legend { border-top: 1px solid #ffffff10; padding-top: 16px; padding-bottom: 40px; }
+    .legend-title { font-size: 11px; color: #445566; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+    .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .legend-card { background: #ffffff05; border-radius: 8px; padding: 8px 10px; }
+    .legend-rpe { font-size: 12px; font-weight: 600; color: #6c8ebf; }
+    .legend-desc { font-size: 11px; color: #556677; margin-top: 2px; }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-eyebrow">Plan 8 semaines</div>
+    <h1>Sub-19' sur 5km</h1>
+    <div class="header-sub">VMA 17 km/h · 4 séances/semaine · Piste disponible</div>
+    <button class="paces-toggle" onclick="togglePaces()">▼ Mes allures de référence</button>
+    <div class="paces-grid hidden" id="paces-grid">
+      <div class="pace-card" style="border-left:3px solid #22c55e"><div class="pace-label">Récup</div><div class="pace-value" style="color:#22c55e">5'45–6'15/km</div></div>
+      <div class="pace-card" style="border-left:3px solid #8b5cf6"><div class="pace-label">Sortie longue</div><div class="pace-value" style="color:#8b5cf6">5'15–5'45/km</div></div>
+      <div class="pace-card" style="border-left:3px solid #3b82f6"><div class="pace-label">Tempo / seuil</div><div class="pace-value" style="color:#3b82f6">4'11–4'25/km</div></div>
+      <div class="pace-card" style="border-left:3px solid #f97316"><div class="pace-label">Allure 5km</div><div class="pace-value" style="color:#f97316">3'31–3'45/km</div></div>
+      <div class="pace-card" style="border-left:3px solid #ef4444"><div class="pace-label">Fractionné court</div><div class="pace-value" style="color:#ef4444">3'12–3'21/km</div></div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="cycle-label">Cycle 1 — Base</div>
+    <div class="week-selector" id="cycle1-btns"></div>
+    <div class="cycle-label">Cycle 2 — Intensification</div>
+    <div class="week-selector" id="cycle2-btns"></div>
+
+    <div class="week-header">
+      <div>
+        <div class="week-title" id="wk-title"></div>
+        <div class="week-focus" id="wk-focus"></div>
+      </div>
+      <div>
+        <div class="week-vol-label">Volume total</div>
+        <div class="week-vol" id="wk-vol"></div>
+      </div>
+    </div>
+
+    <div class="sessions" id="sessions"></div>
+
+    <div class="legend">
+      <div class="legend-title">Légende RPE</div>
+      <div class="legend-grid">
+        <div class="legend-card"><div class="legend-rpe">3–4/10</div><div class="legend-desc">Très facile, conversation aisée</div></div>
+        <div class="legend-card"><div class="legend-rpe">5–6/10</div><div class="legend-desc">Modéré, légèrement essoufflé</div></div>
+        <div class="legend-card"><div class="legend-rpe">7–8/10</div><div class="legend-desc">Difficile, phrases courtes</div></div>
+        <div class="legend-card"><div class="legend-rpe">10/10</div><div class="legend-desc">Effort maximal — test</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const plan = [
+  {
+    week:1, cycle:1, label:"Construction", focus:"Prise de repères sur les allures", total:"~28km",
+    days:[
+      {day:"Lundi",   type:"⚡ Fractionné",   color:"#f97316", seance:"Échauffement 15min · 8×400m à 3'15/km · récup 1'30 trot · retour calme 10min", volume:"~7km",  rpe:"7/10"},
+      {day:"Mardi",   type:"🟢 Footing récup", color:"#22c55e", seance:"5km très lent à 5'50–6'10/km. Jambes qui tournent, respiration nasale possible.", volume:"5km",  rpe:"4/10"},
+      {day:"Jeudi",   type:"🔵 Tempo",         color:"#3b82f6", seance:"Échauffement 10min · 1×20min en continu à 4'20/km · retour calme 10min", volume:"~8km",  rpe:"7/10"},
+      {day:"Samedi",  type:"🟣 Sortie longue", color:"#8b5cf6", seance:"8km à 5'20–5'40/km. Allure conversation obligatoire.", volume:"8km",  rpe:"5/10"},
+    ]
+  },
+  {
+    week:2, cycle:1, label:"Construction", focus:"Solidifier la base aérobie", total:"~32km",
+    days:[
+      {day:"Lundi",   type:"⚡ Fractionné",   color:"#f97316", seance:"Échauffement 15min · 10×400m à 3'15/km · récup 1'30 trot · retour calme 10min", volume:"~8km",  rpe:"7/10"},
+      {day:"Mardi",   type:"🟢 Footing récup", color:"#22c55e", seance:"6km très lent à 5'45–6'10/km.", volume:"6km",  rpe:"4/10"},
+      {day:"Jeudi",   type:"🔵 Tempo",         color:"#3b82f6", seance:"Échauffement 10min · 1×22min en continu à 4'15/km · retour calme 10min", volume:"~9km",  rpe:"7/10"},
+      {day:"Samedi",  type:"🟣 Sortie longue", color:"#8b5cf6", seance:"9km à 5'20–5'40/km.", volume:"9km",  rpe:"5/10"},
+    ]
+  },
+  {
+    week:3, cycle:1, label:"Charge", focus:"Premier contact avec les 1000m", total:"~35km",
+    days:[
+      {day:"Lundi",   type:"⚡ Fractionné",   color:"#f97316", seance:"Échauffement 15min · 4×1000m à 3'35–3'40/km · récup 2min trot · retour calme 10min", volume:"~9km",  rpe:"8/10"},
+      {day:"Mardi",   type:"🟢 Footing récup", color:"#22c55e", seance:"6km très lent à 5'45/km. Obligatoire, ne pas zapper.", volume:"6km",  rpe:"4/10"},
+      {day:"Jeudi",   type:"🔵 Tempo long",    color:"#3b82f6", seance:"Échauffement 10min · 1×25min en continu à 4'15/km · retour calme 10min", volume:"~10km", rpe:"8/10"},
+      {day:"Samedi",  type:"🟣 Sortie longue", color:"#8b5cf6", seance:"10km à 5'15–5'30/km.", volume:"10km", rpe:"5/10"},
+    ]
+  },
+  {
+    week:4, cycle:1, label:"⚡ Décharge", focus:"Récupération — laisser le corps assimiler", total:"~23km",
+    days:[
+      {day:"Lundi",   type:"⚡ Fractionné léger", color:"#f97316", seance:"Échauffement 15min · 6×400m à 3'15/km · récup 2min · retour calme 10min", volume:"~6km", rpe:"6/10"},
+      {day:"Mardi",   type:"😴 Repos actif",      color:"#22c55e", seance:"Marche 30min ou vélo très léger. Pas de course.", volume:"—",    rpe:"2/10"},
+      {day:"Jeudi",   type:"🟢 Footing",          color:"#3b82f6", seance:"5km à 5'30/km, jambes libres.", volume:"5km",  rpe:"4/10"},
+      {day:"Samedi",  type:"🟣 Sortie longue",    color:"#8b5cf6", seance:"7km à 5'30/km.", volume:"7km",  rpe:"4/10"},
+    ]
+  },
+  {
+    week:5, cycle:2, label:"Intensification", focus:"Hausser les curseurs d'intensité", total:"~37km",
+    days:[
+      {day:"Lundi",   type:"⚡ Fractionné",   color:"#f97316", seance:"Échauffement 15min · 5×1000m à 3'33–3'38/km · récup 2min trot · retour calme 10min", volume:"~10km", rpe:"8/10"},
+      {day:"Mardi",   type:"🟢 Footing récup", color:"#22c55e", seance:"6km à 5'45/km. Indispensable après les 1000m.", volume:"6km",  rpe:"4/10"},
+      {day:"Jeudi",   type:"🔵 Tempo + accél", color:"#3b82f6", seance:"Échauffement 10min · 1×25min à 4'10/km · 4×100m en foulées · retour calme", volume:"~10km", rpe:"8/10"},
+      {day:"Samedi",  type:"🟣 Sortie longue", color:"#8b5cf6", seance:"11km à 5'15–5'30/km.", volume:"11km", rpe:"5/10"},
+    ]
+  },
+  {
+    week:6, cycle:2, label:"Intensification", focus:"Séance mixte — qualité + vitesse", total:"~39km",
+    days:[
+      {day:"Lundi",   type:"⚡ Fractionné mixte", color:"#f97316", seance:"Échauffement 15min · 3×1000m à 3'33/km + 4×400m à 3'12/km · récup 2min · retour calme", volume:"~10km", rpe:"8/10"},
+      {day:"Mardi",   type:"🟢 Footing récup",    color:"#22c55e", seance:"6km à 5'45–6'00/km.", volume:"6km",  rpe:"4/10"},
+      {day:"Jeudi",   type:"🔵 Tempo long",        color:"#3b82f6", seance:"Échauffement 10min · 1×28min à 4'10/km · retour calme 10min", volume:"~11km", rpe:"8/10"},
+      {day:"Samedi",  type:"🟣 Sortie longue",     color:"#8b5cf6", seance:"12km à 5'15/km.", volume:"12km", rpe:"5/10"},
+    ]
+  },
+  {
+    week:7, cycle:2, label:"⚡ Affûtage", focus:"Conserver le tranchant, réduire le volume", total:"~28km",
+    days:[
+      {day:"Lundi",   type:"⚡ Fractionné quali", color:"#f97316", seance:"Échauffement 15min · 4×1000m à 3'30/km (allure cible 5km) · récup 2'30 · retour calme", volume:"~9km", rpe:"8/10"},
+      {day:"Mardi",   type:"🟢 Footing récup",    color:"#22c55e", seance:"5km à 5'50/km. Très lent.", volume:"5km",  rpe:"3/10"},
+      {day:"Jeudi",   type:"🔵 Allure spécifique", color:"#3b82f6", seance:"Échauffement 15min · 2×2000m à 3'35/km · récup 3min · retour calme 10min", volume:"~8km", rpe:"7/10"},
+      {day:"Samedi",  type:"🟣 Sortie courte",    color:"#8b5cf6", seance:"6km à 5'30/km. Dernière sortie avant le test.", volume:"6km",  rpe:"4/10"},
+    ]
+  },
+  {
+    week:8, cycle:2, label:"🏁 Test 5km", focus:"Fraîcheur maximale — tout pour le test", total:"~16km",
+    days:[
+      {day:"Lundi",   type:"🔋 Activation",    color:"#f97316", seance:"20min footing très lent + 4×100m en accélérations progressives. Pas plus.", volume:"~3km", rpe:"3/10"},
+      {day:"Mardi",   type:"😴 Repos complet", color:"#22c55e", seance:"Repos total. Marche légère si besoin.", volume:"—",    rpe:"1/10"},
+      {day:"Jeudi",   type:"🏁 TEST 5KM",      color:"#ef4444", seance:"Échauffement 15min trot + gammes · 5km à bloc sur piste · retour calme 10min. Objectif : sub-19' voire 18'30", volume:"~8km", rpe:"10/10"},
+      {day:"Samedi",  type:"🟢 Récup post-test",color:"#8b5cf6", seance:"5km très lent à 6'00/km. Jambes libres, célébration.", volume:"5km",  rpe:"3/10"},
+    ]
+  },
+];
+
+let currentWeek = 1;
+let pacesOpen = false;
+
+function togglePaces() {
+  pacesOpen = !pacesOpen;
+  const grid = document.getElementById('paces-grid');
+  const btn = document.querySelector('.paces-toggle');
+  grid.classList.toggle('hidden', !pacesOpen);
+  btn.textContent = (pacesOpen ? '▲' : '▼') + ' Mes allures de référence';
+}
+
+function renderWeekButtons() {
+  ['cycle1-btns','cycle2-btns'].forEach((id, ci) => {
+    const container = document.getElementById(id);
+    container.innerHTML = '';
+    plan.filter(w => w.cycle === ci+1).forEach(w => {
+      const btn = document.createElement('button');
+      btn.className = 'week-btn' + (w.week === currentWeek ? (w.week === 8 ? ' active-red' : ' active') : '');
+      btn.textContent = 'S' + w.week;
+      btn.onclick = () => selectWeek(w.week);
+      container.appendChild(btn);
+    });
+  });
+}
+
+function renderWeek() {
+  const w = plan[currentWeek - 1];
+  document.getElementById('wk-title').textContent = 'Semaine ' + w.week + ' — ' + w.label;
+  document.getElementById('wk-focus').textContent = w.focus;
+  document.getElementById('wk-vol').textContent = w.total;
+
+  const container = document.getElementById('sessions');
+  container.innerHTML = '';
+  w.days.forEach(d => {
+    container.innerHTML += `
+      <div class="session-card" style="border-left:4px solid ${d.color}">
+        <div class="session-top">
+          <div>
+            <div class="session-day">${d.day}</div>
+            <div class="session-type">${d.type}</div>
+          </div>
+          <div class="session-meta">
+            <div class="session-vol">${d.volume}</div>
+            <div class="session-rpe">RPE ${d.rpe}</div>
+          </div>
+        </div>
+        <div class="session-desc">${d.seance}</div>
+      </div>`;
+  });
+}
+
+function selectWeek(n) {
+  currentWeek = n;
+  renderWeekButtons();
+  renderWeek();
+}
+
+// Init
+renderWeekButtons();
+renderWeek();
+</script>
+</body>
+</html>
